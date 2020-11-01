@@ -32,6 +32,7 @@ $ pip3 install pyenv
 
 ### 2. Start pipenv shell
 
+
 ```bash
 $ pipenv shell
 ```
@@ -58,3 +59,15 @@ $ python app.py
 >> exit()
 ```
 
+## Local development
+
+If all required dependecies are installed, to work on the project you must run it in a python environment using pipenv.
+
+### 1. Start pipenv shell
+
+Run this command to start a python environment, immediatly afterwards run python app.py.
+
+```bash
+$ pipenv shell
+>> python app.py
+```
