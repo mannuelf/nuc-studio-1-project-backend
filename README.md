@@ -15,6 +15,13 @@ $ pipenv shell
 >> python app.py
 ```
 
+### 2. Contributing code
+
+We will use peer review in the form of Pull Requests. You must make a feature branch before starting to code. The `main` branch must always be clean and deployable at all times, do not work on `main` branch.
+
+Lessons on branches and merging can be seen here: [:tv: Watch](https://github.com/Noroff-Fagskole/campus-advisor-training-mannuelf/tree/master/Module%201)
+
+
 ### Endpoints
 
 | Method | Endpoint | Description |
