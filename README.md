@@ -2,6 +2,19 @@
 
 > Backend REST API
 
+## Local development
+
+If all required dependecies are installed, to work on the project you must run it in a python environment using pipenv.
+
+### 1. Start pipenv shell
+
+Run this command to start a python environment, immediatly afterwards run python app.py.
+
+```bash
+$ pipenv shell
+>> python app.py
+```
+
 ### Endpoints
 
 | Method | Endpoint | Description |
@@ -57,17 +70,4 @@ $ python app.py
 >> from app import db
 >> db.create_all()
 >> exit()
-```
-
-## Local development
-
-If all required dependecies are installed, to work on the project you must run it in a python environment using pipenv.
-
-### 1. Start pipenv shell
-
-Run this command to start a python environment, immediatly afterwards run python app.py.
-
-```bash
-$ pipenv shell
->> python app.py
 ```
