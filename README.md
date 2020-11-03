@@ -4,6 +4,13 @@
 
 ## Local development
 
+```bash
+$ git clone git@github.com:mannuelf/nuc-studio-1-project-backend.git
+
+$ cd nuc-studio-1-project-backend/
+
+```
+
 If all required dependecies are installed, to work on the project you must run it in a python environment using pipenv.
 
 ### 1. Start pipenv shell
