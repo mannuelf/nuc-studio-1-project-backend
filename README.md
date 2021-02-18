@@ -118,6 +118,12 @@ You are good to go, start building, now you can run the app inside of pipenv.
 python app.py
 ```
 
+In the console you should see:
+![console](./.github/screen.png)
+
+Navigate to:
+[http://localhost:5000/hello-world](http://localhost:5000/hello-world)
+
 #### 4.1 Create a db, inside pipenv (only need to do this once one a fresh app.)
 
 ```bash
