@@ -15,6 +15,8 @@ cd nuc-studio-1-project-backend/
 
 ## Install Package Manager
 
+Install packages easily with a package manager.
+
 ### MAC
 
 [Homebrew](https://brew.sh/)
