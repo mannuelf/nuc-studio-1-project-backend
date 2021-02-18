@@ -13,7 +13,49 @@ cd nuc-studio-1-project-backend/
 
 ```
 
-If all required dependecies are installed, to work on the project you must run it in a python environment using pipenv.
+## Install Package Manager
+
+### MAC
+
+[Homebrew](https://brew.sh/)
+
+### Windows
+
+[Chocolatey](https://chocolatey.org/)
+
+### Install pyenv
+
+pyenv manages your python versions on your laptop.
+
+[installation instructions](https://github.com/pyenv/pyenv)
+
+[🖥 MAC](https://github.com/pyenv/pyenv#homebrew-on-macos)
+
+[💻 WINDOWS](https://chocolatey.org/packages/pyenv-win)
+
+If all required dependencies are installed, to work on the project you must run it in a python environment using pipenv.
+
+## Set python to 3.8.7
+
+```bash
+pyenv global 3.8.7
+```
+
+## Install pipenv
+
+[pipenv docs](https://pypi.org/project/pipenv/)
+
+```bash
+pip install pipenv
+```
+
+### Install PROJECT dependencies
+
+There is a Pipfile, which lists all packages needed to run app.
+
+```bash
+pipenv install
+```
 
 ### 1. Start pipenv shell
 
@@ -21,7 +63,12 @@ Run this command to start a python environment, immediately afterwards run pytho
 
 ```bash
 pipenv shell
->> python app.py
+```
+
+Run the app
+
+```bash
+python app.py
 ```
 
 ### 2. Endpoints
