@@ -1,4 +1,4 @@
-# FactBook Explorers: 
+# FactBook Explorers
 
 > Backend REST API
 
@@ -27,7 +27,7 @@ Install packages easily with a package manager.
 
 ### Install pyenv
 
-pyenv manages your python versions on your laptop.
+pyenv manages your python versions on your laptop. so you can install multiple versions, MacOS ships with 2.7 but we need >= 3.8.7
 
 [installation instructions](https://github.com/pyenv/pyenv)
 
@@ -39,9 +39,20 @@ If all required dependencies are installed, to work on the project you must run 
 
 ## Set python to 3.8.7
 
+Install pyenv first:
+[installation instructions](https://github.com/pyenv/pyenv)
+
 ```bash
 pyenv global 3.8.7
 ```
+
+The run this command in your shell to init pyenv.
+
+```bash
+eval "$(pyenv init -)"
+```
+
+Also add is to your .bash_profile. what is bash_profile? [click here to read](https://linuxize.com/post/bashrc-vs-bash-profile/).
 
 ## Install pipenv
 
@@ -77,6 +88,9 @@ python app.py
 
 | Method | Endpoint | Description |
 | ------ | :------- | :---------- |
+| GET | /population-levels | Gets all population level |
+| GET | /population-levels/country | Gets all population level by country |
+| GET | /population-levels/country/year | Gets all population level by country and year |
 | GET | /hello-world | Gets all test messages |
 | GET | /hello-world/{id} | Get one message |
 | POST | /hello-world/ | Post a message to API |
