@@ -1,3 +1,12 @@
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
+import os
+
+db = SQLAlchemy(app)  # Init DB
+ma = Marshmallow(app)  # Init Marshmallow
+
+
 @app.route('/hello-world', methods=['POST'])
 def add_message():
     message = request.json['message']
