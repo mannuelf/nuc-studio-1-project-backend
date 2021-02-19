@@ -70,9 +70,9 @@ There is a Pipfile, which lists all packages needed to run app.
 pipenv install
 ```
 
-### 1. Start pipenv shell
+### 1. Start server
 
-Run this command to start a python environment, immediately afterwards run python app.py.
+Run this command to start a python environment, immediately afterwards run python app.py, this will start the server and you can begin.
 
 ```bash
 pipenv shell
