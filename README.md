@@ -78,7 +78,13 @@ Run this command to start a python environment, immediately afterwards run pytho
 pipenv shell
 ```
 
-Run the app
+Start in DEVELOPMENT mode
+
+```bash
+export FLASK_ENV=development
+```
+
+then run the app
 
 ```bash
 python app.py
