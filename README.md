@@ -92,14 +92,14 @@ python app.py
 
 ### 2. Endpoints
 
-| Method | Endpoint | Description |
-| ------ | :------- | :---------- |
-| GET | /population-levels | Gets all population level |
-| GET | /population-levels/country | Gets all population level by country |
-| GET | /population-levels/country/year | Gets all population level by country and year |
-| GET | /hello-world | Gets all test messages |
-| GET | /hello-world/{id} | Get one message |
-| POST | /hello-world/ | Post a message to API |
+| Method | Endpoint                        | Description                                   |
+| ------ | :------------------------------ | :-------------------------------------------- |
+| GET    | /population-levels              | Gets all population level                     |
+| GET    | /population-levels/country      | Gets all population level by country          |
+| GET    | /population-levels/country/year | Gets all population level by country and year |
+| GET    | /hello-world                    | Gets all test messages                        |
+| GET    | /hello-world/{id}               | Get one message                               |
+| POST   | /hello-world/                   | Post a message to API                         |
 
 ## System dependencies
 
@@ -136,8 +136,16 @@ You are good to go, start building, now you can run the app inside of pipenv.
 
 ### 4. Run inside pipenv
 
+Run server in development mode.
+
 ```bash
-python app.py
+export FLASK_ENV=development
+```
+
+Start development server.
+
+```bash
+flask run
 ```
 
 In the console you should see:
