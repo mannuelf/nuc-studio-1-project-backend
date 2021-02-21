@@ -87,7 +87,7 @@ export FLASK_ENV=development
 then run the app
 
 ```bash
-python app.py
+flask run
 ```
 
 ### 2. Endpoints
