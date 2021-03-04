@@ -84,7 +84,6 @@ def get_message(id):
     result = hello_world_schema.dump(message)
     return jsonify(result)
 
-'''
 class PopulationLevels(db.Model):
   __tablename__ = "population_levels"
   CountryId = Column(Integer, primary_key=True)
@@ -101,13 +100,12 @@ def get_population_levels():
   data = PopulationLevels.query.get()
   result = population_levels_schema.dump(data)
   return jsonify(result)
-'''
 
 # Init the schema
 hello_world_schema = HelloWorldSchema()
 hello_worlds_schema = HelloWorldSchema(many=True)
-#population_levels_schema = PopulationLevelsSchema()
-#population_levels_schema = PopulationLevelsSchema(many=True)
+population_levels_schema = PopulationLevelsSchema()
+population_levels_schema = PopulationLevelsSchema(many=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
