@@ -9,7 +9,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/', methods=['GET'])
 def get():
-  return jsonify({'message': 'Hello world'})
+  return jsonify({'message': 'orhan'})
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'db.sqlite')
