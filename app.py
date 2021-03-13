@@ -11,11 +11,12 @@ app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-  os.path.join(basedir, 'data/db.sqlite')
+    os.path.join(basedir, 'data/db.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)  # Init DB
 ma = Marshmallow(app)  # Init Marshmallow
+
 
 def db_create_population_levels():
     try:
@@ -46,6 +47,7 @@ def db_create_population_levels():
         if db_connect:
             db_connect.close()
 
+
 def db_insert_population_levels():
     try:
         db_connect = sqlite3.connect('data/db.sqlite')
@@ -55,11 +57,13 @@ def db_insert_population_levels():
 
         SQL = '''INSERT INTO population_levels (Country, Year) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 
-        population_levels_csv = pd.read_csv('data/factbook-2015-table1-en.csv', engine='python', encoding="UTF-8", header=0, delimiter=";", skiprows=3, skipfooter=1, index_col=0)
+        population_levels_csv = pd.read_csv('data/factbook-2015-table1-en.csv', engine='python',
+                                            encoding="UTF-8", header=0, delimiter=";", skiprows=3, skipfooter=1, index_col=0)
         df_drop_last_2_rows = population_levels_csv.iloc[:-1]
         df_drop_last_2_rows.columns.values[0] = "Country"
         print(df_drop_last_2_rows)
-        df_drop_last_2_rows.to_sql('population_levels', db_connect, if_exists='append', index=False)
+        df_drop_last_2_rows.to_sql(
+            'population_levels', db_connect, if_exists='append', index=False)
         cur.execute("SELECT * FROM population_levels")
         print("💿", cur.fetchall())
         db_connect.commit()
@@ -76,6 +80,70 @@ def get():
     db_create_population_levels()
     db_insert_population_levels()
     return jsonify({'message': 'Hello world'})
+
+
+class PopulationLevels(db.Model):
+    __tablename__ = 'population_levels'
+    id = db.Column(db.Integer)
+    CountryID = db.Column(db.Integer, primary_key=True)
+    Country = db.Column(db.String(100), unique=True)
+    year_1 = db.Column(db.String)
+    year_2 = db.Column(db.String)
+    year_3 = db.Column(db.String)
+    year_4 = db.Column(db.String)
+    year_5 = db.Column(db.String)
+    year_6 = db.Column(db.String)
+    year_6 = db.Column(db.String)
+    year_7 = db.Column(db.String)
+    year_8 = db.Column(db.String)
+    year_9 = db.Column(db.String)
+    year_10 = db.Column(db.String)
+    year_11 = db.Column(db.String)
+    year_12 = db.Column(db.String)
+    year_13 = db.Column(db.String)
+
+    def __init__(self, CountryID, Country,  year_1, year_2, year_3, year_4, year_5, year_6, year_7, year_8, year_9, year_10, year_11, year_12, year_13):
+        self.CountryID = CountryID
+        self.country = Country
+        self.year_1 = year_1
+        self.year_2 = year_2
+        self.year_3 = year_3
+        self.year_4 = year_4
+        self.year_5 = year_5
+        self.year_6 = year_6
+        self.year_7 = year_7
+        self.year_8 = year_8
+        self.year_9 = year_9
+        self.year_10 = year_10
+        self.year_11 = year_11
+        self.year_12 = year_12
+        self.year_13 = year_13
+
+
+# class PopulationLevelsSchema(ma.SQLAlchemySchema):
+#    class Meta:
+#        fields = (countryID, country,  year_1, year_2, year_3, year_4, year_5, year_6, year_7, year_8, year_9, year_10, year_11, year_12,year_13)
+
+
+@app.route('/population_levels', method=['GET'])
+def get_population_levels():
+    try:
+        db_connect = sqlite3.connect('data/db.sqlite')
+        cur = db_connect.cursor()
+
+        print("🚀 connected to db")
+        SQL = '''SELECT * FROM population_levels'''
+        result = cur.execute(SQL)
+        print(result)
+        db_connect.commit()
+        db_connect.close()
+        return jsonify(result)
+    except sqlite3.Error as error:
+        print("💥", error)
+    finally:
+        if db_connect:
+            db_connect.close()
+            print("I am done")
 
 
 class HelloWorld(db.Model):
@@ -103,21 +171,8 @@ def add_message():
     db.session.add(new_message)
     db.session.commit()
 
-    return hello_world_schema.jsonify(new_message)
-
-
-@app.route('/hello-world', methods=['GET'])
-def get_messages():
-    all_messages = HelloWorld.query.all()
-    result = hello_worlds_schema.dump(all_messages)
     return jsonify(result)
 
-
-@app.route('/hello-world/<id>', methods=['GET'])
-def get_message(id):
-    message = HelloWorld.query.get(id)
-    result = hello_world_schema.dump(message)
-    return jsonify(result)
 
 hello_world_schema = HelloWorldSchema()
 hello_worlds_schema = HelloWorldSchema(many=True)
