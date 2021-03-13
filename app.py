@@ -11,35 +11,58 @@ app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-  os.path.join(basedir, 'db.sqlite')
+  os.path.join(basedir, 'data/db.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)  # Init DB
 ma = Marshmallow(app)  # Init Marshmallow
 
-def db_create():
-    db_connect = sqlite3.connect('./db.sqlite')
-    connect = db_connect.cursor()
+def db_create_population_levels():
+    try:
+        db_connect = sqlite3.connect('data/db.sqlite')
+        cur = db_connect.cursor()
 
-    # Population Levels
-    pl_data = pd.read_csv('data/factbook-2015-table1-en.csv')
-    SQL = '''CREATE TABLE population_levels (CountryID INTEGER,
+        SQL = '''CREATE TABLE population_levels (CountryID INTEGER,
                 Country TEXT NOT NULL,
                 Year TEXT NOT NULL,
                 PRIMARY KEY (CountryID))'''
-    INSERTSQL = '''INSTER INTO population_levels (CountryID, Country, Year) VALUES (?,?,?)'''
-    #connect.execute(SQL)
-    with open(pl_data, 'r') as csvfile:
-      reader = csv.reader(csvfile)
-      next(reader) # skip header
-      for row in reader:
-        print(row)
-      connect.close()
+
+        INSERTSQL = '''INSTER INTO population_levels (CountryID, Country, Year) VALUES (?,?,?)'''
+        cur.execute(SQL)
+        db_connect.close()
+    except sqlite3.Error as error:
+        print("Failed to create database", error)
+    finally:
+        if db_connect:
+            db_connect.close()
+
+def db_insert_population_levels():
+    try:
+        db_connect = sqlite3.connect('data/db.sqlite')
+        cur = db_connect.cursor()
+
+        print("connected to db")
+
+        SQL = '''INSERT INTO population_levels (CountryID, Country, Year) VALUES (?,?,?)'''
+
+        population_levels_csv = open('data/factbook-2015-table1-en.csv')
+        rows = csv.reader(population_levels_csv)
+
+        cur.executemany(SQL, rows)
+        print(cur.fetchall())
+        db_connect.commit()
+        db_connect.close()
+    except sqlite3.Error as error:
+        print("Failed to insert", error)
+    finally:
+        if db_connect:
+            db_connect.close()
 
 
 @app.route('/', methods=['GET'])
 def get():
-    db_create() # for testing create the DB, TODO make this better.
+    db_insert_population_levels()
+    # db_create() # TODO for testing create the DB, make this better.
     return jsonify({'message': 'Hello world'})
 
 
@@ -84,28 +107,10 @@ def get_message(id):
     result = hello_world_schema.dump(message)
     return jsonify(result)
 
-class PopulationLevels(db.Model):
-  __tablename__ = "population_levels"
-  CountryId = Column(Integer, primary_key=True)
-  Country = Column(String)
-  Year = Column(String)
-
-class PopulationLevelsSchema(ma.SQLAlchemySchema):
-    class Meta:
-        fields = ('CountryId', 'Country', 'Year')
-
-@app.route('/population-levels', method=['GET'])
-def get_population_levels():
-  print("getting population levels")
-  data = PopulationLevels.query.get()
-  result = population_levels_schema.dump(data)
-  return jsonify(result)
-
-# Init the schema
 hello_world_schema = HelloWorldSchema()
 hello_worlds_schema = HelloWorldSchema(many=True)
-population_levels_schema = PopulationLevelsSchema()
-population_levels_schema = PopulationLevelsSchema(many=True)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
