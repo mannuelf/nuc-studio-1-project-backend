@@ -14,6 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
     os.path.join(basedir, 'data/db.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# using SQLALchemy and sqlite3 with raw queries, we should pick on and stick to it, but for now this works.
 db = SQLAlchemy(app)  # Init DB
 ma = Marshmallow(app)  # Init Marshmallow
 
