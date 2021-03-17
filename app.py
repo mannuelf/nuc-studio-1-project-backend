@@ -133,14 +133,16 @@ def get_population_levels():
         db_connect = sqlite3.connect('data/db.sqlite')
         cur = db_connect.cursor()
 
-        print("🚀 connected to db")
-        SQL = '''SELECT * FROM population_levels'''
-        query = cur.execute(SQL)
+        table_name = 'population_levels'
+        query = cur.execute("SELECT * FROM population_levels")
         result = query.fetchall()
+
         db_connect.commit()
         db_connect.close()
+
         endpoint_obj = {}
         count = 0
+
         for country in result:
             count += 1
             endpoint_obj[count] = {
