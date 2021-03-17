@@ -8,8 +8,8 @@ from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-basedir = os.path.abspath(os.path.dirname(__file__))
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
     os.path.join(basedir, 'data/db.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -122,11 +122,12 @@ class PopulationLevels(db.Model):
 
 
 # class PopulationLevelsSchema(ma.SQLAlchemySchema):
-#    class Meta:
-#        fields = (countryID, country,  year_1, year_2, year_3, year_4, year_5, year_6, year_7, year_8, year_9, year_10, year_11, year_12,year_13)
+ #   class Meta:
+  #      fields = (countryID, country,  year_1, year_2, year_3, year_4, year_5,
+   #               year_6, year_7, year_8, year_9, year_10, year_11, year_12, year_13)
 
 
-@app.route('/population_levels', method=['GET'])
+@app.route('/population-levels', methods=['GET'])
 def get_population_levels():
     try:
         db_connect = sqlite3.connect('data/db.sqlite')
@@ -134,11 +135,32 @@ def get_population_levels():
 
         print("🚀 connected to db")
         SQL = '''SELECT * FROM population_levels'''
-        result = cur.execute(SQL)
-        print(result)
+        query = cur.execute(SQL)
+        result = query.fetchall()
         db_connect.commit()
         db_connect.close()
-        return jsonify(result)
+        endpoint_obj = {}
+        count = 0
+        for country in result:
+            count += 1
+            endpoint_obj[count] = {
+                "id": country[0],
+                "country": country[1],
+                "2002":  country[2],
+                "2003": country[3],
+                "2004": country[4],
+                "2005": country[5],
+                "2006": country[6],
+                "2007": country[7],
+                "2008": country[8],
+                "2009": country[9],
+                "2010": country[10],
+                "2011": country[11],
+                "2012": country[12],
+                "2013": country[13],
+                "2014": country[14]
+            }
+        return jsonify(endpoint_obj)
     except sqlite3.Error as error:
         print("💥", error)
     finally:
@@ -171,8 +193,6 @@ def add_message():
 
     db.session.add(new_message)
     db.session.commit()
-
-    return jsonify(result)
 
 
 hello_world_schema = HelloWorldSchema()
