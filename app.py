@@ -78,50 +78,6 @@ def get():
     return jsonify({'message': 'Hello world'})
 
 
-class PopulationLevels(db.Model):
-    __tablename__ = 'population_levels'
-    id = db.Column(db.Integer)
-    CountryID = db.Column(db.Integer, primary_key=True)
-    Country = db.Column(db.String(100), unique=True)
-    year_1 = db.Column(db.String)
-    year_2 = db.Column(db.String)
-    year_3 = db.Column(db.String)
-    year_4 = db.Column(db.String)
-    year_5 = db.Column(db.String)
-    year_6 = db.Column(db.String)
-    year_6 = db.Column(db.String)
-    year_7 = db.Column(db.String)
-    year_8 = db.Column(db.String)
-    year_9 = db.Column(db.String)
-    year_10 = db.Column(db.String)
-    year_11 = db.Column(db.String)
-    year_12 = db.Column(db.String)
-    year_13 = db.Column(db.String)
-
-    def __init__(self, CountryID, Country,  year_1, year_2, year_3, year_4, year_5, year_6, year_7, year_8, year_9, year_10, year_11, year_12, year_13):
-        self.CountryID = CountryID
-        self.country = Country
-        self.year_1 = year_1
-        self.year_2 = year_2
-        self.year_3 = year_3
-        self.year_4 = year_4
-        self.year_5 = year_5
-        self.year_6 = year_6
-        self.year_7 = year_7
-        self.year_8 = year_8
-        self.year_9 = year_9
-        self.year_10 = year_10
-        self.year_11 = year_11
-        self.year_12 = year_12
-        self.year_13 = year_13
-
-
-# class PopulationLevelsSchema(ma.SQLAlchemySchema):
- #   class Meta:
-  #      fields = (countryID, country,  year_1, year_2, year_3, year_4, year_5,
-   #               year_6, year_7, year_8, year_9, year_10, year_11, year_12, year_13)
-
-
 @app.route('/population-levels', methods=['GET'])
 def get_population_levels():
     try:
