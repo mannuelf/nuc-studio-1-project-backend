@@ -54,19 +54,14 @@ def db_insert_population_levels():
         db_connect = sqlite3.connect('data/db.sqlite')
         cur = db_connect.cursor()
 
-        print("🚀 connected to db")
-
         SQL = '''INSERT INTO population_levels (Country, Year) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 
         population_levels_csv = pd.read_csv('data/factbook-2015-table1-en.csv', engine='python',
                                             encoding="UTF-8", header=0, delimiter=";", skiprows=3, skipfooter=1, index_col=0)
+                                            
         df_drop_last_2_rows = population_levels_csv.iloc[:-1]
         df_drop_last_2_rows.columns.values[0] = "Country"
-        print(df_drop_last_2_rows)
-        df_drop_last_2_rows.to_sql(
-            'population_levels', db_connect, if_exists='append', index=False)
-        cur.execute("SELECT * FROM population_levels")
-        print("💿", cur.fetchall())
+        df_drop_last_2_rows.to_sql('population_levels', db_connect, if_exists='append', index=False)
         db_connect.commit()
         db_connect.close()
     except sqlite3.Error as error:
