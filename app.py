@@ -101,7 +101,7 @@ def get_population_levels():
         count = 0
         for country in result:
             count += 1
-            endpoint_obj[country[1].lower()] = {
+            endpoint_obj[country[1].lower().replace(" ", "-")] = {
                 "id": country[0],
                 "country": country[1],
                 "2002":  country[2],
