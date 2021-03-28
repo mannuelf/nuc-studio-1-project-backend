@@ -2,6 +2,8 @@ data/db_browser_settings.sqbpro
 .DS_STORE
 .idea
 .vscode
+tags
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -3,12 +3,29 @@ import csv
 import xlrd
 import sqlite3
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+from flask.helpers import get_root_path
 
 app = Flask(__name__)
 
+# https://flask.palletsprojects.com/en/1.1.x/patterns/sqlite3/
+DATABASE = 'data/db.sqlite'
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is None:
+        db.close()
+
+# will have remove these as we using sqlite3 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
     os.path.join(basedir, 'data/db.sqlite')
@@ -21,8 +38,7 @@ ma = Marshmallow(app)  # Init Marshmallow
 
 def db_create_population_levels():
     try:
-        db_connect = sqlite3.connect('data/db.sqlite')
-        cur = db_connect.cursor()
+        cur = get_db().cursor()
 
         SQL = '''CREATE TABLE IF NOT EXISTS population_levels (CountryID INTEGER,
                 Country TEXT NOT NULL,
@@ -41,62 +57,53 @@ def db_create_population_levels():
                 [2014] TEXT NOT NULL,
                 PRIMARY KEY (CountryID))'''
         cur.execute(SQL)
-        db_connect.close()
+        cur.close()
     except sqlite3.Error as error:
         print("Failed to create database", error)
     finally:
-        if db_connect:
-            db_connect.close()
-
+        print("complete")
 
 def db_insert_population_levels():
     try:
-        db_connect = sqlite3.connect('data/db.sqlite')
-        cur = db_connect.cursor()
+        cur = get_db().cursor()
 
-        SQL = '''INSERT INTO population_levels (Country, Year) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+        SQL = '''INSERT INTO population_levels (Country, Year)
+                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 
-        population_levels_csv = pd.read_csv('data/factbook-2015-table1-en.csv', engine='python',
-                                            encoding="UTF-8", header=0, delimiter=";", skiprows=3, skipfooter=1, index_col=0)
-                                            
+        population_levels_csv = pd.read_csv('data/factbook-2015-table1-en.csv',
+                                            engine='python', encoding="UTF-8",
+                                            header=0, delimiter=";", skiprows=3,
+                                            skipfooter=1, index_col=0)
+
         df_drop_last_2_rows = population_levels_csv.iloc[:-1]
         df_drop_last_2_rows.columns.values[0] = "Country"
-        df_drop_last_2_rows.to_sql('population_levels', db_connect, if_exists='append', index=False)
-        db_connect.commit()
-        db_connect.close()
+        df_drop_last_2_rows.to_sql('population_levels', cur, if_exists='append', index=False)
+        cur.close()
     except sqlite3.Error as error:
         print("Failed to insert", error)
     finally:
-        if db_connect:
-            db_connect.close()
-
+        print("complete")
 
 @app.route('/', methods=['GET'])
 def get():
-    db_create_population_levels()
-    db_insert_population_levels()
     return jsonify({'message': 'Hello world'})
 
 
 @app.route('/population-levels', methods=['GET'])
 def get_population_levels():
     try:
-        db_connect = sqlite3.connect('data/db.sqlite')
-        cur = db_connect.cursor()
-
+        cur = get_db().cursor()
         table_name = 'population_levels'
         query = cur.execute("SELECT * FROM population_levels")
         result = query.fetchall()
 
-        db_connect.commit()
-        db_connect.close()
+        cur.close()
 
         endpoint_obj = {}
         count = 0
-
         for country in result:
             count += 1
-            endpoint_obj[count] = {
+            endpoint_obj[country[1].lower()] = {
                 "id": country[0],
                 "country": country[1],
                 "2002":  country[2],
@@ -117,9 +124,9 @@ def get_population_levels():
     except sqlite3.Error as error:
         print("💥", error)
     finally:
-        if db_connect:
-            db_connect.close()
-            print("I am done")
+        if cur:
+            cur.close()
+            print("closing db")
 
 
 class HelloWorld(db.Model):
@@ -150,7 +157,6 @@ def add_message():
 
 hello_world_schema = HelloWorldSchema()
 hello_worlds_schema = HelloWorldSchema(many=True)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
