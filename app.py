@@ -94,9 +94,7 @@ def get_population_levels():
     try:
         cur = get_db().cursor()
         table_name = 'population_levels'
-        query = cur.execute("SELECT * FROM population_levels")
-        result = query.fetchall()
-
+        result = cur.execute("""SELECT * FROM population_levels""").fetchall()
         cur.close()
 
         endpoint_obj = {}
