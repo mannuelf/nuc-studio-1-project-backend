@@ -83,10 +83,6 @@ def db_insert_population_levels():
     finally:
         print("complete")
 
-@app.route('/', methods=['GET'])
-def get():
-    return jsonify({'message': 'Hello world'})
-
 
 @app.route('/population-levels', methods=['GET'])
 def get_population_levels():
@@ -139,6 +135,11 @@ class HelloWorld(db.Model):
 class HelloWorldSchema(ma.SQLAlchemySchema):
     class Meta:
         fields = ('id', 'message', 'description')
+
+
+@app.route('/', methods=['GET'])
+def get():
+    return jsonify({'message': 'Hello world'})
 
 
 @app.route('/hello-world', methods=['POST'])
