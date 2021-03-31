@@ -21,7 +21,7 @@ def get_db():
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
-    if db is None:
+    if db is not None:
         db.close()
 
 # will have remove these as we using sqlite3 
@@ -56,35 +56,40 @@ def db_create_gross_gdp():
                     [2013] TEXT NOT NULL,
                     [2014] TEXT NOT NULL,
                     PRIMARY KEY (CountryID))'''
+        cur.execute(SQL)
+        cur.close()
     except sqlite3.Error as error:
         print("Failed to create database", error)
     finally:
         print("complete")
 
+
 # Gross GDP data insert
-def db_insert_population_levels():
+def db_insert_gross_gdp():
     try:
-        cur = get_db().cursor()
-
-        SQL = '''INSERT INTO gross_gdp (Country, Year)
+        with app.app_context():
+            cur = get_db()
+            SQL = '''INSERT INTO gross_gdp (Country, Year)
                              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
-
-        gross_gdp_csv = pd.read_csv('data/gross-gdp.csv',
+            gross_gdp_csv = pd.read_csv('data/gross-gdp.csv',
                                             engine='python', encoding="UTF-8",
                                             header=0, delimiter=";", skiprows=3,
                                             skipfooter=1, index_col=0)
-
-        df_drop_last_2_rows = gross_gdp_csv.iloc[:-1]
-        df_drop_last_2_rows.columns.values[0] = "Country"
-        df_drop_last_2_rows.to_sql('gross_gdp', cur, if_exists='append', index=False)
-        cur.close()
+            print("🚀", gross_gdp_csv)
+            df_drop_last_2_rows = gross_gdp_csv.iloc[:-1]
+            print("🚧", df_drop_last_2_rows)
+            df_drop_last_2_rows.columns.values[0] = "Country"
+            df_drop_last_2_rows.to_sql('gross_gdp', cur, if_exists='append', index=False)
+            cur.close()
     except sqlite3.Error as error:
         print("Failed to insert", error)
     finally:
         print("complete")
 
+
+
 @app.route('/gross_gdp', methods=['GET'])
-def get_population_levels():
+def get_gross_gdp():
     try:
         cur = get_db().cursor()
         table_name = 'gross_gdp'
@@ -172,6 +177,7 @@ def db_insert_population_levels():
 
 @app.route('/', methods=['GET'])
 def get():
+    db_insert_gross_gdp()
     return jsonify({'message': 'Hello world'})
 
 
