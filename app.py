@@ -35,6 +35,93 @@ db = SQLAlchemy(app)  # Init DB
 ma = Marshmallow(app)  # Init Marshmallow
 
 
+
+# Gross GDP migration
+def db_create_gross_gdp():
+    try:
+        cur = get_db().cursor()
+        SQL = '''CREATE TABLE IF NOT EXISTS gross_gdp (CountryID INTEGER,
+                    Country TEXT NOT NULL,
+                    [2002] TEXT NOT NULL,
+                    [2003] TEXT NOT NULL,
+                    [2004] TEXT NOT NULL,
+                    [2005] TEXT NOT NULL,
+                    [2006] TEXT NOT NULL,
+                    [2007] TEXT NOT NULL,
+                    [2008] TEXT NOT NULL,
+                    [2009] TEXT NOT NULL,
+                    [2010] TEXT NOT NULL,
+                    [2011] TEXT NOT NULL,
+                    [2012] TEXT NOT NULL,
+                    [2013] TEXT NOT NULL,
+                    [2014] TEXT NOT NULL,
+                    PRIMARY KEY (CountryID))'''
+    except sqlite3.Error as error:
+        print("Failed to create database", error)
+    finally:
+        print("complete")
+
+# Gross GDP data insert
+def db_insert_population_levels():
+    try:
+        cur = get_db().cursor()
+
+        SQL = '''INSERT INTO gross_gdp (Country, Year)
+                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+
+        gross_gdp_csv = pd.read_csv('data/gross-gdp.csv',
+                                            engine='python', encoding="UTF-8",
+                                            header=0, delimiter=";", skiprows=3,
+                                            skipfooter=1, index_col=0)
+
+        df_drop_last_2_rows = gross_gdp_csv.iloc[:-1]
+        df_drop_last_2_rows.columns.values[0] = "Country"
+        df_drop_last_2_rows.to_sql('gross_gdp', cur, if_exists='append', index=False)
+        cur.close()
+    except sqlite3.Error as error:
+        print("Failed to insert", error)
+    finally:
+        print("complete")
+
+@app.route('/gross_gdp', methods=['GET'])
+def get_population_levels():
+    try:
+        cur = get_db().cursor()
+        table_name = 'gross_gdp'
+        result = cur.execute("""SELECT * FROM gross_gdp""").fetchall()
+        cur.close()
+
+        endpoint_obj = {}
+        count = 0
+        for country in result:
+            count += 1
+            endpoint_obj[country[1].lower().replace(" ", "-")] = {
+                "id": country[0],
+                "country": country[1],
+                "2002":  country[2],
+                "2003": country[3],
+                "2004": country[4],
+                "2005": country[5],
+                "2006": country[6],
+                "2007": country[7],
+                "2008": country[8],
+                "2009": country[9],
+                "2010": country[10],
+                "2011": country[11],
+                "2012": country[12],
+                "2013": country[13],
+                "2014": country[14]
+            }
+        return jsonify(endpoint_obj)
+    except sqlite3.Error as error:
+        print("💥", error)
+    finally:
+        if cur:
+            cur.close()
+            print("closing db")
+
+
+
 def db_create_population_levels():
     try:
         cur = get_db().cursor()
