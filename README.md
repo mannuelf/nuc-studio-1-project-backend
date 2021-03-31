@@ -1,4 +1,4 @@
-# FactBook Explorers: 
+# FactBook Explorers
 
 > Backend REST API
 
@@ -27,7 +27,7 @@ Install packages easily with a package manager.
 
 ### Install pyenv
 
-pyenv manages your python versions on your laptop.
+pyenv manages your python versions on your laptop. so you can install multiple versions, MacOS ships with 2.7 but we need >= 3.8.7
 
 [installation instructions](https://github.com/pyenv/pyenv)
 
@@ -39,9 +39,20 @@ If all required dependencies are installed, to work on the project you must run 
 
 ## Set python to 3.8.7
 
+Install pyenv first:
+[installation instructions](https://github.com/pyenv/pyenv)
+
 ```bash
 pyenv global 3.8.7
 ```
+
+The run this command in your shell to init pyenv.
+
+```bash
+eval "$(pyenv init -)"
+```
+
+Also add is to your .bash_profile. what is bash_profile? [click here to read](https://linuxize.com/post/bashrc-vs-bash-profile/).
 
 ## Install pipenv
 
@@ -59,27 +70,36 @@ There is a Pipfile, which lists all packages needed to run app.
 pipenv install
 ```
 
-### 1. Start pipenv shell
+### 1. Start server
 
-Run this command to start a python environment, immediately afterwards run python app.py.
+Run this command to start a python environment, immediately afterwards run python app.py, this will start the server and you can begin.
 
 ```bash
 pipenv shell
 ```
 
-Run the app
+Start in DEVELOPMENT mode
 
 ```bash
-python app.py
+export FLASK_ENV=development
+```
+
+then run the app
+
+```bash
+flask run
 ```
 
 ### 2. Endpoints
 
-| Method | Endpoint | Description |
-| ------ | :------- | :---------- |
-| GET | /hello-world | Gets all test messages |
-| GET | /hello-world/{id} | Get one message |
-| POST | /hello-world/ | Post a message to API |
+| Method | Endpoint                        | Description                                   |
+| ------ | :------------------------------ | :-------------------------------------------- |
+| GET    | /population-levels              | Gets all population level                     |
+| GET    | /population-levels/country      | Gets all population level by country          |
+| GET    | /population-levels/country/year | Gets all population level by country and year |
+| GET    | /hello-world                    | Gets all test messages                        |
+| GET    | /hello-world/{id}               | Get one message                               |
+| POST   | /hello-world/                   | Post a message to API                         |
 
 ## System dependencies
 
@@ -116,8 +136,16 @@ You are good to go, start building, now you can run the app inside of pipenv.
 
 ### 4. Run inside pipenv
 
+Run server in development mode.
+
 ```bash
-python app.py
+export FLASK_ENV=development
+```
+
+Start development server.
+
+```bash
+flask run
 ```
 
 In the console you should see:
