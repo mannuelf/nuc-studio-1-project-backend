@@ -69,15 +69,12 @@ def db_insert_gross_gdp():
     try:
         with app.app_context():
             cur = get_db()
-            SQL = '''INSERT INTO gross_gdp (Country, Year)
-                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
-            gross_gdp_csv = pd.read_csv('data/gross-gdp.csv',
-                                            engine='python', encoding="UTF-8",
-                                            header=0, delimiter=";", skiprows=3,
-                                            skipfooter=1, index_col=0)
-            print("🚀", gross_gdp_csv)
+
+            gross_gdp_csv = pd.read_csv('data/gross-gdp.csv', engine='python',
+                                        encoding="UTF-8", header=0, delimiter=";",
+                                        skiprows=3, skipfooter=1, index_col=0)
+
             df_drop_last_2_rows = gross_gdp_csv.iloc[:-1]
-            print("🚧", df_drop_last_2_rows)
             df_drop_last_2_rows.columns.values[0] = "Country"
             df_drop_last_2_rows.to_sql('gross_gdp', cur, if_exists='append', index=False)
             cur.close()
@@ -88,7 +85,7 @@ def db_insert_gross_gdp():
 
 
 
-@app.route('/gross_gdp', methods=['GET'])
+@app.route('/gross-gdp', methods=['GET'])
 def get_gross_gdp():
     try:
         cur = get_db().cursor()
@@ -156,10 +153,7 @@ def db_create_population_levels():
 
 def db_insert_population_levels():
     try:
-        cur = get_db().cursor()
-
-        SQL = '''INSERT INTO population_levels (Country, Year)
-                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+        cur = get_db()
 
         population_levels_csv = pd.read_csv('data/factbook-2015-table1-en.csv',
                                             engine='python', encoding="UTF-8",
@@ -174,11 +168,6 @@ def db_insert_population_levels():
         print("Failed to insert", error)
     finally:
         print("complete")
-
-@app.route('/', methods=['GET'])
-def get():
-    db_insert_gross_gdp()
-    return jsonify({'message': 'Hello world'})
 
 
 @app.route('/population-levels', methods=['GET'])
@@ -232,6 +221,12 @@ class HelloWorld(db.Model):
 class HelloWorldSchema(ma.SQLAlchemySchema):
     class Meta:
         fields = ('id', 'message', 'description')
+
+
+@app.route('/', methods=['GET'])
+def get():
+    db_insert_gross_gdp()
+    return jsonify({'message': 'Hello world'})
 
 
 @app.route('/hello-world', methods=['POST'])
