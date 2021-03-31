@@ -64,7 +64,7 @@ def db_create_population_levels():
 
 def db_insert_population_levels():
     try:
-        cur = get_db().cursor()
+        cur = get_db()
 
         SQL = '''INSERT INTO population_levels (Country, Year)
                              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
