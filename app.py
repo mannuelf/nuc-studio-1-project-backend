@@ -6,7 +6,6 @@ import pandas as pd
 from flask import Flask, request, jsonify, g
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
-from flask.helpers import get_root_path
 
 app = Flask(__name__)
 
