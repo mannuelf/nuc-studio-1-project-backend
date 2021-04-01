@@ -64,7 +64,7 @@ def db_create_population_levels():
 
 def db_insert_population_levels():
     try:
-        cur = get_db().cursor()
+        cur = get_db()
 
         SQL = '''INSERT INTO population_levels (Country, Year)
                              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
@@ -82,10 +82,6 @@ def db_insert_population_levels():
         print("Failed to insert", error)
     finally:
         print("complete")
-
-@app.route('/', methods=['GET'])
-def get():
-    return jsonify({'message': 'Hello world'})
 
 
 @app.route('/population-levels', methods=['GET'])
@@ -139,6 +135,11 @@ class HelloWorld(db.Model):
 class HelloWorldSchema(ma.SQLAlchemySchema):
     class Meta:
         fields = ('id', 'message', 'description')
+
+
+@app.route('/', methods=['GET'])
+def get():
+    return jsonify({'message': 'Hello world'})
 
 
 @app.route('/hello-world', methods=['POST'])
