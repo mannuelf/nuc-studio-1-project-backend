@@ -225,6 +225,7 @@ class HelloWorldSchema(ma.SQLAlchemySchema):
 
 @app.route('/', methods=['GET'])
 def get():
+    db_create_gross_gdp()
     db_insert_gross_gdp()
     return jsonify({'message': 'Hello world'})
 
