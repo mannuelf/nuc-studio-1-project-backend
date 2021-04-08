@@ -12,6 +12,7 @@ app = Flask(__name__)
 # https://flask.palletsprojects.com/en/1.1.x/patterns/sqlite3/
 DATABASE = 'data/db.sqlite'
 
+# function to initialise an intance of a db connection.
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -25,7 +26,12 @@ def close_connection(exception):
         db.close()
 
 # will have remove these as we using sqlite3 
+
+# basedir keeps reference to the location or path where the root of 
+# the application is kept and running.
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+# this is a SQLAlchemy database connection configuration, it should be removed.
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
     os.path.join(basedir, 'data/db.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -35,9 +41,14 @@ db = SQLAlchemy(app)  # Init DB
 ma = Marshmallow(app)  # Init Marshmallow
 
 
-
-# Gross GDP migration
 def db_create_gross_gdp():
+    """
+    Creates a table called gross_gdp. This is the just make it work version...
+    we should create migrations, using https://flask-migrate.readthedocs.io/en/latest/
+    but we can do later I just want to get things working.
+    to initiate this function I simply call it using the home route function I 
+    call db_create_gross_gdp() inside home route and it does its job once.
+    """
     try:
         cur = get_db().cursor()
         SQL = '''CREATE TABLE IF NOT EXISTS gross_gdp (CountryID INTEGER,
@@ -64,8 +75,14 @@ def db_create_gross_gdp():
         print("complete")
 
 
-# Gross GDP data insert
 def db_insert_gross_gdp():
+    """
+    Gross GDP data insert
+    This function again I call it on the home route function and this function 
+    inserts all the data gotten from the CSV.
+    after calling it once, i remove the function call from the homeroute call, 
+    we need to create database migration using https://flask-migrate.readthedocs.io/en/latest/
+    """
     try:
         with app.app_context():
             cur = get_db()
@@ -83,10 +100,22 @@ def db_insert_gross_gdp():
     finally:
         print("complete")
 
-
-
+# ApiSpec https://apispec.readthedocs.io/en/latest/
 @app.route('/gross-gdp', methods=['GET'])
 def get_gross_gdp():
+    """ A endpoint to retreive gross gdp levels data per country.
+    ---
+    get:
+      description: Get all gross gdp level data.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: Return a collection of countries and their gross gdp figures per year.
+          content:
+            application/json:
+              schema: GrossGdpSchema
+    """
     try:
         cur = get_db().cursor()
         table_name = 'gross_gdp'
@@ -172,6 +201,19 @@ def db_insert_population_levels():
 
 @app.route('/population-levels', methods=['GET'])
 def get_population_levels():
+    """ A endpoint to retreive population levels data per country.
+    ---
+    get:
+      description: Get all population level data.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: Return a collection of countries and their figures per year.
+          content:
+            application/json:
+              schema: PopulationLevelsSchema
+    """
     try:
         cur = get_db().cursor()
         table_name = 'population_levels'
