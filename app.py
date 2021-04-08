@@ -9,12 +9,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# Retrieve the name from url parameter
-name = request.args.get("name", None)
-
-# For debugging
-print(f"got name {name}")
-
 # https://flask.palletsprojects.com/en/1.1.x/patterns/sqlite3/
 DATABASE = 'data/db.sqlite'
 
@@ -231,11 +225,6 @@ class HelloWorldSchema(ma.SQLAlchemySchema):
 
 @app.route('/', methods=['GET'])
 def get():
-    # Retrieve the name from url parameter
-    name = request.args.get("name", None)
-    # For debugging
-    print(f"got name {name}")
-
     return jsonify({'message': 'Hello world'})
 
 
