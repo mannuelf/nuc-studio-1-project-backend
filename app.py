@@ -231,6 +231,11 @@ class HelloWorldSchema(ma.SQLAlchemySchema):
 
 @app.route('/', methods=['GET'])
 def get():
+    # Retrieve the name from url parameter
+    name = request.args.get("name", None)
+    # For debugging
+    print(f"got name {name}")
+
     return jsonify({'message': 'Hello world'})
 
 
