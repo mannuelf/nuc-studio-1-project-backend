@@ -243,4 +243,5 @@ hello_world_schema = HelloWorldSchema()
 hello_worlds_schema = HelloWorldSchema(many=True)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Threaded option to enable multiple instances for multiple user access support
+    app.run(debug=True, threaded=True, port=5000)
