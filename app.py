@@ -3,11 +3,13 @@ import csv
 import xlrd
 import sqlite3
 import pandas as pd
+from flask_cors import CORS
 from flask import Flask, request, jsonify, g
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+CORS(app)
 
 # https://flask.palletsprojects.com/en/1.1.x/patterns/sqlite3/
 DATABASE = 'data/db.sqlite'
