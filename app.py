@@ -145,7 +145,7 @@ def get_gross_gdp():
                 "2013": country[13],
                 "2014": country[14]
             }
-        return jsonify(endpoint_obj)
+        return jsonify([endpoint_obj])
     except sqlite3.Error as error:
         print("💥", error)
     finally:
@@ -243,7 +243,7 @@ def get_population_levels():
                 "2013": country[13],
                 "2014": country[14]
             }
-        return jsonify(endpoint_obj)
+        return jsonify([endpoint_obj])
     except sqlite3.Error as error:
         print("💥", error)
     finally:
