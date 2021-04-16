@@ -374,7 +374,6 @@ class HelloWorldSchema(ma.SQLAlchemySchema):
 
 @app.route('/', methods=['GET'])
 def get():
-    db_insert_disposable_income()
     return jsonify({'message': 'Hello world'})
 
 
