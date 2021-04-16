@@ -42,6 +42,59 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)  # Init DB
 ma = Marshmallow(app)  # Init Marshmallow
 
+def db_create_disposable_income():
+    try:
+        print("creating the table")
+        cur = get_db().cursor()
+        SQL = '''CREATE TABLE IF NOT EXISTS disposable_income (CountryID INTEGER,
+                    Country TEXT NOT NULL,
+                    [2002] TEXT NOT NULL,
+                    [2003] TEXT NOT NULL,
+                    [2004] TEXT NOT NULL,
+                    [2005] TEXT NOT NULL,
+                    [2006] TEXT NOT NULL,
+                    [2007] TEXT NOT NULL,
+                    [2008] TEXT NOT NULL,
+                    [2009] TEXT NOT NULL,
+                    [2010] TEXT NOT NULL,
+                    [2011] TEXT NOT NULL,
+                    [2012] TEXT NOT NULL,
+                    [2013] TEXT NOT NULL,
+                    [2014] TEXT NOT NULL,
+                    PRIMARY KEY (CountryID))'''
+        cur.execute(SQL)
+        cur.close()
+    except sqlite3.Error as error:
+        print("Failed to create database", error)
+    finally:
+        print("complete")
+
+def db_insert_disposable_income():
+    """
+    Disposable data insert
+    This function again I call it on the home route function and this function 
+    inserts all the data gotten from the CSV.
+    after calling it once, i remove the function call from the homeroute call, 
+    we need to create database migration using https://flask-migrate.readthedocs.io/en/latest/
+    """
+    try:
+        with app.app_context():
+            cur = get_db()
+
+            gross_gdp_csv = pd.read_csv('./data/real-household-disposable-income.csv', engine='python',
+                                        encoding="UTF-8", header=0, delimiter=";",
+                                        skiprows=3, skipfooter=2, index_col=0)
+
+            df_drop_last_2_rows = gross_gdp_csv.iloc[:-1]
+            df_drop_last_2_rows.columns.values[0] = "Country"
+            df_drop_last_2_rows.to_sql('disposable_income', cur, if_exists='append', index=False)
+            cur.close()
+    except sqlite3.Error as error:
+        print("Failed to insert", error)
+    finally:
+        print("complete")
+
+
 
 def db_create_gross_gdp():
     """
@@ -103,6 +156,59 @@ def db_insert_gross_gdp():
         print("complete")
 
 # ApiSpec https://apispec.readthedocs.io/en/latest/
+@app.route('/disposable-income', methods=['GET'])
+def get_disposable_income():
+    """ A endpoint to retreive disposable income levels data per country.
+    ---
+    get:
+      description: Get all disposable income data.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: Return a collection of countries and their gross gdp figures per year.
+          content:
+            application/json:
+              schema: DisposableIncomeSchema
+    """
+
+    try:
+        cur = get_db().cursor()
+        table_name = 'disposable_income'
+        result = cur.execute("""SELECT * FROM disposable_income""").fetchall()
+        cur.close()
+
+        endpoint_obj = {}
+        count = 0
+        for country in result:
+            count += 1
+            endpoint_obj[country[1].lower().replace(" ", "-")] = {
+                "id": country[0],
+                "country": country[1],
+                "2002":  country[2],
+                "2003": country[3],
+                "2004": country[4],
+                "2005": country[5],
+                "2006": country[6],
+                "2007": country[7],
+                "2008": country[8],
+                "2009": country[9],
+                "2010": country[10],
+                "2011": country[11],
+                "2012": country[12],
+                "2013": country[13],
+                "2014": country[14]
+            }
+        return jsonify([endpoint_obj])
+    except sqlite3.Error as error:
+        print("💥", error)
+    finally:
+        if cur:
+            cur.close()
+            print("closing db")
+
+
+
 @app.route('/gross-gdp', methods=['GET'])
 def get_gross_gdp():
     """ A endpoint to retreive gross gdp levels data per country.
@@ -265,7 +371,6 @@ class HelloWorld(db.Model):
 class HelloWorldSchema(ma.SQLAlchemySchema):
     class Meta:
         fields = ('id', 'message', 'description')
-
 
 @app.route('/', methods=['GET'])
 def get():
