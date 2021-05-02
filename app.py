@@ -252,6 +252,91 @@ def get_population_levels():
             print("closing db")
 
 
+def db_real_household_disposable_income():
+    print("creating the database")
+    try:
+        cur = get_db().cursor()
+
+        SQL = '''CREATE TABLE IF NOT EXISTS real_household_disposable_income (CountryID INTEGER,
+                Country TEXT NOT NULL,
+                [2002] TEXT NOT NULL,
+                [2003] TEXT NOT NULL,
+                [2004] TEXT NOT NULL,
+                [2005] TEXT NOT NULL,
+                [2006] TEXT NOT NULL,
+                [2007] TEXT NOT NULL,
+                [2008] TEXT NOT NULL,
+                [2009] TEXT NOT NULL,
+                [2010] TEXT NOT NULL,
+                [2011] TEXT NOT NULL,
+                [2012] TEXT NOT NULL,
+                [2013] TEXT NOT NULL,
+                [2014] TEXT NOT NULL,
+                PRIMARY KEY (CountryID))'''
+        cur.execute(SQL)
+        cur.close()
+    except sqlite3.Error as error:
+        print("Failed to create database", error)
+    finally:
+        if cur:
+            cur.close()
+            print("closing db")
+
+def db_insert_real_household_disposable_income():
+    try:
+        cur = get_db()
+
+        real_household_disposable_income_csv = pd.read_csv('data/real-household-disposable-income.csv',
+                                            engine='python', encoding="UTF-8",
+                                            header=0, delimiter=";", skiprows=3,
+                                            skipfooter=1, index_col=0)
+
+        df_drop_last_2_rows = real_household_disposable_income_csv.iloc[:-1]
+        df_drop_last_2_rows.columns.values[0] = "Country"
+        df_drop_last_2_rows.to_sql('real_household_disposable_income', cur, if_exists='append', index=False)
+        cur.close()
+    except sqlite3.Error as error:
+        print("Failed to insert", error)
+    finally:
+        print("complete")
+
+@app.route('/real-household-disposable-income', methods=['GET'])
+def get_real_household_disposable_income():
+    try:
+        cur = get_db().cursor()
+        table_name = 'real_household_disposable_income'
+        result = cur.execute("""SELECT * FROM real_household_disposable_income""").fetchall()
+        cur.close()
+
+        endpoint_obj = {}
+        count = 0
+        for country in result:
+            count += 1
+            endpoint_obj[country[1].lower().replace(" ", "-")] = {
+                "id": country[0],
+                "country": country[1],
+                "2002":  country[2],
+                "2003": country[3],
+                "2004": country[4],
+                "2005": country[5],
+                "2006": country[6],
+                "2007": country[7],
+                "2008": country[8],
+                "2009": country[9],
+                "2010": country[10],
+                "2011": country[11],
+                "2012": country[12],
+                "2013": country[13],
+                "2014": country[14]
+            }
+        return jsonify(endpoint_obj)
+    except sqlite3.Error as error:
+        print("Not Working", error)
+    finally:
+        if cur:
+            cur.close()
+            print("closing db")
+
 class HelloWorld(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.String(100), unique=True)
@@ -269,7 +354,9 @@ class HelloWorldSchema(ma.SQLAlchemySchema):
 
 @app.route('/', methods=['GET'])
 def get():
-    return jsonify({'message': 'Hello world'})
+    db_real_household_disposable_income()
+    db_insert_real_household_disposable_income()
+    return jsonify({'message': 'World Hello'})
 
 
 @app.route('/hello-world', methods=['POST'])
