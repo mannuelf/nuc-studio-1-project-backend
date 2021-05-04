@@ -189,7 +189,8 @@ Create and issue using the issus board.
 
 1. Assign it to yourself and
 2. Label it using appropriate label
-3. ![image](https://user-images.githubusercontent.com/210504/116962393-1dd55180-aca6-11eb-83b2-0688cc3dd0aa.png)
+3. Assign issue to a Project
+![image](https://user-images.githubusercontent.com/210504/116962393-1dd55180-aca6-11eb-83b2-0688cc3dd0aa.png)
 
 ### Coding
 
