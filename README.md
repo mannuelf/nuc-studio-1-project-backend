@@ -169,8 +169,32 @@ $ python app.py
 >> exit()
 ```
 
-### 🚉 Contributing code
+## 🚉 Contributing code
 
 We will use peer review in the form of Pull Requests. You must make a feature branch before starting to code. The `main` branch must always be clean and deployable at all times, do not work on `main` branch.
 
 Lessons on branches and merging can be seen here: [:tv: Watch](https://github.com/Noroff-Fagskole/campus-advisor-training-mannuelf/tree/master/Module%201)
+
+## Contribution Guidelines
+
+We are using Github Issue and Project board to manage tasks.
+
+[https://github.com/mannuelf/nuc-studio-1-project-backend/issues](https://github.com/mannuelf/nuc-studio-1-project-backend/issues)
+
+[https://github.com/mannuelf/nuc-studio-1-project-backend/projects/1](https://github.com/mannuelf/nuc-studio-1-project-backend/projects/1)
+
+### To contribute:
+
+Create and issue using the issus board.
+
+1. Assign it to yourself and
+2. Label it using appropriate label
+3. ![image](https://user-images.githubusercontent.com/210504/116962393-1dd55180-aca6-11eb-83b2-0688cc3dd0aa.png)
+
+### Coding
+
+1. keep `main` branch clean and deployable at all times, do not code on it.
+2. Fork Repo or 
+3. if already on the team create a feature branch
+4. Work on your task
+5. Create a Pull Request.
