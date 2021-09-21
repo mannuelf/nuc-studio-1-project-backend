@@ -4,9 +4,9 @@
 
 Demo URLS
 
-[https://factbook-explorers.herokuapp.com/population-levels](https://factbook-explorers.herokuapp.com/population-levels)
+[https://factbook-explorers-two.herokuapp.com/population-levels](https://factbook-explorers-two.herokuapp.com/population-levels)
 
-[https://factbook-explorers.herokuapp.com/gross-gdp](https://factbook-explorers.herokuapp.com/gross-gdp)
+[https://factbook-explorers-two.herokuapp.com/gross-gdp](https://factbook-explorers-two.herokuapp.com/gross-gdp)
 
 ## Local development
 
